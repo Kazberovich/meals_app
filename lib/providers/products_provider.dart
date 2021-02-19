@@ -1,7 +1,6 @@
-import 'package:shop_app/models/product.dart';
+import 'package:shop_app/providers/product.dart';
 
 import 'package:flutter/material.dart';
-
 
 class ProductsProvider with ChangeNotifier {
   List<Product> _items = [
@@ -39,8 +38,18 @@ class ProductsProvider with ChangeNotifier {
     ),
   ];
 
+  var _showFavoritesOnly = false;
+
   List<Product> get items {
-    return [..._items];
+    return _showFavoritesOnly
+        ? _items.where((element) {
+            return element.isFavorite == true;
+          }).toList()
+        : [..._items];
+  }
+
+  List<Product> get favoriteItems {
+    return _items.where((element) => element.isFavorite == true).toList();
   }
 
   void addProduct(Product value) {
