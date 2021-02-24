@@ -14,9 +14,13 @@ class UserProductsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your products'),
-        actions: [IconButton(icon: const Icon(Icons.add), onPressed: () {
-          Navigator.of(context).pushNamed(EditProductScreen.routeName);
-        })],
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                Navigator.of(context).pushNamed(EditProductScreen.routeName);
+              })
+        ],
       ),
       drawer: AppDrawerWidget(),
       body: Padding(
@@ -24,7 +28,9 @@ class UserProductsScreen extends StatelessWidget {
         child: ListView.builder(
           itemBuilder: (ctx, index) {
             return Column(children: [
-              UserProductItemWidget(productsData.items[index].title,
+              UserProductItemWidget(
+                  productsData.items[index].id,
+                  productsData.items[index].title,
                   productsData.items[index].imageUrl),
               Divider(),
             ]);
