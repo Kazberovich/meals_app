@@ -60,9 +60,9 @@ class ProductsProvider with ChangeNotifier {
     return _items.where((element) => element.isFavorite == true).toList();
   }
 
-  Future<void> fetchAndSetProducts() async {
-    final url =
-        'https://flutter-shopp-app-81356-default-rtdb.firebaseio.com/products.json?auth=$token';
+  Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
+    final filterString =  filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+    final url = 'https://flutter-shopp-app-81356-default-rtdb.firebaseio.com/products.json?auth=$token&$filterString';
 
     try {
       final response = await get(url);
@@ -84,7 +84,8 @@ class ProductsProvider with ChangeNotifier {
           title: value['title'],
           description: value['description'],
           price: value['price'],
-          isFavorite: favoriteData == null ? false : favoriteData[productId] ?? false,
+          isFavorite:
+              favoriteData == null ? false : favoriteData[productId] ?? false,
         ));
       });
 
@@ -108,6 +109,7 @@ class ProductsProvider with ChangeNotifier {
           'description': value.description,
           'price': value.price,
           'imageUrl': value.imageUrl,
+          'creatorId': userId,
         }),
       );
 
