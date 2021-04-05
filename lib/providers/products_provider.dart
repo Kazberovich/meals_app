@@ -7,8 +7,9 @@ import 'dart:convert';
 
 class ProductsProvider with ChangeNotifier {
   final String token;
+  final String userId;
 
-  ProductsProvider(this.token, this._items);
+  ProductsProvider(this.token, this.userId, this._items);
 
   List<Product> _items = [
     // Product(
@@ -69,6 +70,12 @@ class ProductsProvider with ChangeNotifier {
       if (extractedData == null) {
         return;
       }
+
+      final favUrl =
+          'https://flutter-shopp-app-81356-default-rtdb.firebaseio.com/userFavorites/$userId.json?auth=$token';
+      final favoriteResponse = await get(favUrl);
+      final favoriteData = json.decode(favoriteResponse.body);
+
       final List<Product> loadedProducts = [];
       extractedData.forEach((productId, value) {
         loadedProducts.add(Product(
@@ -77,7 +84,7 @@ class ProductsProvider with ChangeNotifier {
           title: value['title'],
           description: value['description'],
           price: value['price'],
-          isFavorite: value['isFavorite'],
+          isFavorite: favoriteData == null ? false : favoriteData[productId] ?? false,
         ));
       });
 
@@ -101,7 +108,6 @@ class ProductsProvider with ChangeNotifier {
           'description': value.description,
           'price': value.price,
           'imageUrl': value.imageUrl,
-          'isFavorite': value.isFavorite,
         }),
       );
 
