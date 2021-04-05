@@ -18,38 +18,52 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (ctx) => AuthProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => ProductsProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => CartProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => OrdersProvider(),
-        ),
-      ],
-      child: MaterialApp(
-        title: 'MyShop',
-        theme: ThemeData(
-          primarySwatch: Colors.teal,
-          accentColor: Colors.tealAccent,
-          fontFamily: 'Lato',
-        ),
-        home: AuthScreen(),
-        routes: {
-          ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
-          CartScreen.routeName: (ctx) => CartScreen(),
-          OrdersScreen.routeName: (ctx) => OrdersScreen(),
-          UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
-          EditProductScreen.routeName: (ctx) => EditProductScreen(),
-          ProductsOvervieScreeen.routeName: (ctx) => ProductsOvervieScreeen(),
-        },
-      ),
-    );
+        providers: [
+          ChangeNotifierProvider(
+            create: (ctx) => AuthProvider(),
+          ),
+          ChangeNotifierProxyProvider<AuthProvider, ProductsProvider>(
+            update: (ctx, auth, previousProducts) => ProductsProvider(
+              auth.token,
+              previousProducts == null ? [] : previousProducts.items,
+            ),
+            create: null,
+          ),
+          ChangeNotifierProvider(
+            create: (ctx) => CartProvider(),
+          ),
+          ChangeNotifierProxyProvider<AuthProvider, OrdersProvider>(
+            update: (ctx, auth, previousOrders) => OrdersProvider(
+              auth.token,
+              previousOrders == null ? [] : previousOrders.orders,
+            ),
+            create: null,
+          ),
+        ],
+        child: Consumer<AuthProvider>(
+          builder: (ctx, authData, _) {
+            return MaterialApp(
+              title: 'MyShop',
+              theme: ThemeData(
+                primarySwatch: Colors.teal,
+                accentColor: Colors.tealAccent,
+                fontFamily: 'Lato',
+              ),
+              home: authData.isAuthenticated
+                  ? ProductsOvervieScreeen()
+                  : AuthScreen(),
+              routes: {
+                ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+                CartScreen.routeName: (ctx) => CartScreen(),
+                OrdersScreen.routeName: (ctx) => OrdersScreen(),
+                UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
+                EditProductScreen.routeName: (ctx) => EditProductScreen(),
+                ProductsOvervieScreeen.routeName: (ctx) =>
+                    ProductsOvervieScreeen(),
+              },
+            );
+          },
+        ));
   }
 }
 
