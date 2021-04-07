@@ -17,48 +17,75 @@ class ProductDetailScreen extends StatelessWidget {
       listen: false,
     ).findById(productiD);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(product.title),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: 300,
-              width: double.infinity,
-              child: Image.network(
-                product.imageUrl,
-                fit: BoxFit.cover,
+      // appBar: AppBar(
+      //   title: Text(product.title),
+      // ),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 300,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(product.title, style: TextStyle(backgroundColor: Colors.black45),),
+              background: Hero(
+                tag: productiD,
+                child: Image.network(
+                  product.imageUrl,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              '\$${product.price}',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 20,
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              SizedBox(
+                height: 10,
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                product.description,
+              Text(
+                '\$${product.price}',
                 style: TextStyle(
-                  color: Colors.teal,
+                  color: Colors.grey,
                   fontSize: 20,
                 ),
                 textAlign: TextAlign.center,
-                softWrap: true,
               ),
-            ),
-          ],
-        ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  product.description,
+                  style: TextStyle(
+                    color: Colors.teal,
+                    fontSize: 20,
+                  ),
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                ),
+              ),
+              SizedBox(
+                height: 800,
+              ),
+            ]),
+          ),
+        ],
+        // child: Column(
+        //   children: [
+        //     Container(
+        //       height: 300,
+        //       width: double.infinity,
+        //       child: Hero(
+        //         tag: productiD,
+        //         child: Image.network(
+        //           product.imageUrl,
+        //           fit: BoxFit.cover,
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ),
     );
   }
